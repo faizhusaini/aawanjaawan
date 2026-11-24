@@ -1,0 +1,36 @@
+**/.DS_Store
+archive
+node_modules
+packages
+dist/package-lock.json
+src/package-lock.json
+
+# Local community data
+/data/
+__pycache__/
+
+# Cloudflare local output and credentials
+cloudflare/public/
+cloudflare/.wrangler/
+cloudflare/.dev.vars
+.env
+.env.*
+
+# IDE settings and local service registration
+.idea/
+*.iml
+.openai/
+
+# Reproducible build output and personal development config
+/dist/
+/integrations/google-sheets/Index.html
+/config.json
+*.log
+
+# Local agent/cloud configuration
+.agents/
+.codex/
+.aws/
+
+# Local scratch commands
+/cloudflare/login

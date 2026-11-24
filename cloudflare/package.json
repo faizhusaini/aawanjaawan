@@ -1,0 +1,24 @@
+{
+  "name": "aawanjaawan-cloudflare",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "python3 ../build.py",
+    "login": "wrangler login",
+    "whoami": "wrangler whoami",
+    "db:create": "wrangler d1 create aawanjaawan",
+    "db:local": "wrangler d1 migrations apply DB --local",
+    "db:remote": "wrangler d1 migrations apply DB --remote",
+    "dev": "npm run build && npm run db:local && wrangler dev",
+    "deploy": "npm run build && wrangler deploy --dry-run && npm run db:remote && wrangler deploy",
+    "test": "node --test ../test/*.test.mjs",
+    "launch": "python3 launch.py",
+    "check:deploy": "wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

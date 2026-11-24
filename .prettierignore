@@ -1,0 +1,5 @@
+node_modules/
+cloudflare/node_modules/
+cloudflare/public/
+dist/
+integrations/google-sheets/Index.html

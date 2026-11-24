@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aawan Jaawan · A little closer to home</title>
+    <meta
+      name="description"
+      content="The Lucknow–Hyderabad community travel board. Share a journey, find a helping hand, stay a little closer to home." />
+    <meta name="theme-color" content="#194e40" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <a class="brand" href="#"
+        ><span class="brand-mark">a<span>j</span><i>↗</i></span
+        ><span>Aawan Jaawan<small>दो शहर, एक अपना सा रिश्ता</small></span></a
+      >
+      <nav>
+        <a class="nav-link active" href="#board">Community board</a
+        ><button class="nav-link" id="saved-nav">
+          Saved <span id="saved-count">0</span></button
+        ><button class="nav-link" id="about">Our little community ↗</button>
+      </nav>
+      <button class="button primary small" data-create="trip">
+        ＋ Share your trip
+      </button>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span></span> LUCKNOW ROOTS. HYDERABAD HOME.
+          </div>
+          <h1>
+            Do sheher.<br />Ek <em>apnapan.</em><span class="sun">✳</span>
+          </h1>
+          <p>
+            A journey home. A little favour. A familiar face.<br />Connecting
+            our people between Lucknow & Hyderabad.
+          </p>
+          <div class="hero-actions">
+            <button class="button primary" data-create="request">
+              Find a traveller <span>↗</span></button
+            ><button class="button secondary" data-create="trip">
+              ＋ I’m travelling
+            </button>
+          </div>
+          <div class="people">
+            <div class="avatar-stack">
+              <span>AK</span><span>SR</span><span>FA</span><span>NS</span>
+            </div>
+            <span
+              >Made for our community.<br /><strong
+                >Because apne, apne hote hain.</strong
+              ></span
+            >
+          </div>
+        </div>
+        <div
+          class="hero-art"
+          aria-label="Illustration connecting Lucknow and Hyderabad">
+          <div class="art-grain"></div>
+          <div class="city-label lucknow">Lucknow <span>लखनऊ</span></div>
+          <div class="city-label hyderabad">
+            Hyderabad <span>حیدرآباد</span>
+          </div>
+          <svg
+            viewBox="0 0 620 365"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <circle cx="475" cy="95" r="48" fill="#E7B771" opacity=".6" />
+            <path
+              d="M140 139C216 30 417 58 468 238"
+              stroke="#748E76"
+              stroke-width="1.6"
+              stroke-dasharray="5 7" />
+            <path
+              d="m320 76 17-5-8 11 4 11-7-5-7 7 2-12-9-6 8-1Z"
+              fill="#285747" />
+            <g stroke="#526F59" stroke-width="1.6" fill="#E8E8D7">
+              <path
+                d="M39 253h222v14H39zM51 249V137h17v112M230 249V137h17v112M48 137h23v-8H48zM227 137h23v-8h-23z" />
+              <path
+                d="M54 129v-19l5-10 6 10v19M233 129v-19l5-10 6 10v19M80 249V158h138v91M91 158v-12h116v12M104 146v-13h90v13M118 133v-8h63v8" />
+              <path
+                d="M120 249v-46c0-40 57-40 57 0v46M130 249v-44c0-28 37-28 37 0v44M89 185h18v32H89zM189 185h18v32h-18zM80 226h39M179 226h39" />
+              <path d="M43 267h214M31 274h240" />
+              <path d="M145 125v-9m-6 0h12M57 150h7m170 0h7" />
+            </g>
+            <g stroke="#526F59" stroke-width="1.6" fill="#E8E8D7">
+              <path
+                d="M347 319h229v10H347zM366 317V177h17v140M539 317V177h17v140M362 177h25v-9h-25zM535 177h25v-9h-25z" />
+              <path
+                d="M365 168v-21c0-16 20-16 20 0v21M538 168v-21c0-16 20-16 20 0v21M374 132v-13M547 132v-13M391 317v-95h140v95M398 222v-25h126v25M400 197l61-30 61 30M407 205h108" />
+              <path
+                d="M438 317v-44c0-37 46-37 46 0v44M445 317v-43c0-24 32-24 32 0v43M402 238h21v26h-21zM499 238h21v26h-21zM402 280h21v26h-21zM499 280h21v26h-21zM369 194h10m-10 23h10m-10 23h10m-10 23h10m-10 23h10m163-92h10m-10 23h10m-10 23h10m-10 23h10m-10 23h10" />
+              <path d="M348 336h234M337 343h252" />
+            </g>
+            <path d="M14 279h272M319 347h287" stroke="#8A9A7C" />
+            <path
+              d="M289 220c-12-20-28-5-18 7l18 17 18-17c10-12-6-27-18-7Z"
+              fill="#C7815C" />
+            <path
+              d="m279 272 23 2m-12-12 1 23"
+              stroke="#A8AC8E"
+              stroke-width="1.5" />
+          </svg>
+          <div class="art-note">a little closer to home <span>♡</span></div>
+          <span class="art-star">✦</span>
+        </div>
+      </section>
+      <section class="community-strip">
+        <span>↔ <strong>Two cities. One community.</strong></span
+        ><span>✧ Share a journey</span><span>♧ Lend a helping hand</span
+        ><span>♡ Carry a little love home</span>
+      </section>
+      <section id="board" class="board">
+        <div class="section-heading">
+          <div class="eyebrow">THE COMMUNITY BOARD</div>
+          <div class="title-row">
+            <h2>Who’s going where?</h2>
+            <button class="button primary" data-create="request">
+              ＋ Post a request
+            </button>
+          </div>
+          <p>A trip to share or a favour to ask. You’re in the right place.</p>
+        </div>
+        <div class="board-toolbar">
+          <div class="tabs" role="tablist">
+            <button class="selected" data-tab="all" role="tab">
+              All posts <span id="all-count"></span></button
+            ><button data-tab="trip" role="tab">↗ Upcoming trips</button
+            ><button data-tab="request" role="tab">♡ Travel requests</button>
+          </div>
+          <label class="sort"
+            >Sort by
+            <select id="sort">
+              <option value="soon">Travel date</option>
+              <option value="new">Newest first</option>
+            </select></label
+          >
+        </div>
+        <div class="filters">
+          <label
+            ><span>↔</span
+            ><select id="route">
+              <option value="all">Both directions</option>
+              <option value="lko">Lucknow → Hyderabad</option>
+              <option value="hyd">Hyderabad → Lucknow</option>
+            </select></label
+          ><label
+            ><span>▦</span
+            ><select id="dates">
+              <option value="all">Any date</option>
+              <option value="7">Next 7 days</option>
+              <option value="30">Next 30 days</option>
+            </select></label
+          ><label class="search"
+            ><span>⌕</span
+            ><input
+              id="search"
+              placeholder="Search people or a little favour…"
+              aria-label="Search posts" /></label
+          ><button id="clear">Reset filters ↺</button>
+        </div>
+        <div class="board-meta">
+          <span id="result-count"></span
+          ><span class="demo-note"
+            ><i></i> Example community · posts saved on this device</span
+          >
+        </div>
+        <div id="posts" class="posts"></div>
+        <div id="empty" hidden class="empty">
+          <span>✧</span>
+          <h3>A little quiet on this route.</h3>
+          <p>Try another filter, or be the first to post.</p>
+          <button class="button primary" data-create="request">
+            ＋ Post a request
+          </button>
+        </div>
+      </section>
+      <section class="bottom-banner">
+        <div class="banner-icon">♡</div>
+        <div>
+          <h3>It’s more than just going from A to B.</h3>
+          <p>
+            It’s ammi ke haath ka achaar, a helping hand, and a bit of home.
+          </p>
+        </div>
+        <button class="button secondary" data-create="trip">
+          Be someone’s connection ↗
+        </button>
+      </section>
+      <footer>
+        <a class="footer-brand" href="#">Aawan Jaawan<span>आवन जावन</span></a
+        ><span>Built with apnapan, for our Lucknow–Hyderabad family.</span
+        ><span>Made for the journeys that connect us ♡</span>
+      </footer>
+    </main>
+    <dialog id="post-dialog" aria-labelledby="form-title">
+      <form id="post-form" method="dialog">
+        <div class="modal-heading">
+          <div>
+            <div class="eyebrow">A LITTLE CONNECTION STARTS HERE</div>
+            <h2 id="form-title">Share your trip</h2>
+          </div>
+          <button class="close" type="button" aria-label="Close dialog">
+            ×
+          </button>
+        </div>
+        <p id="form-description">
+          Let our people know when you’re heading home.
+        </p>
+        <div class="form-grid">
+          <label
+            >Your name<input
+              name="name"
+              maxlength="60"
+              placeholder="e.g. Ayesha Khan"
+              required /></label
+          ><label
+            >WhatsApp number<input
+              name="phone"
+              type="tel"
+              minlength="10"
+              maxlength="24"
+              placeholder="+91 98765 43210"
+              required /></label
+          ><label
+            >Direction<select name="route">
+              <option value="lko">Lucknow → Hyderabad</option>
+              <option value="hyd">Hyderabad → Lucknow</option>
+            </select></label
+          ><label id="date-label"
+            ><span>Travel date</span
+            ><input name="date" type="date" required /><small
+              id="date-hint"
+              hidden
+              >Find someone travelling on or before this date.</small
+            ></label
+          ><label id="mode-label"
+            ><span>Travelling by</span
+            ><select name="mode">
+              <option>Flight</option>
+              <option>Train</option>
+              <option>Car</option>
+              <option>Not decided</option>
+            </select></label
+          ><label id="help-label"
+            ><span>Happy to help with</span
+            ><select name="help">
+              <option>A small parcel</option>
+              <option>Travel company</option>
+              <option>Anything I can</option>
+              <option>Just sharing my trip</option>
+            </select></label
+          >
+        </div>
+        <label
+          ><span id="note-label">Trip details (optional)</span
+          ><textarea
+            name="note"
+            rows="3"
+            maxlength="350"
+            placeholder="Flight or train number, departure time, or anything else you’d like to share…"></textarea>
+        </label>
+        <div class="form-info">
+          Your post and WhatsApp contact will be visible to everyone who can
+          access this community board.
+        </div>
+        <button class="button primary submit" type="submit">
+          Share with the community ↗
+        </button>
+      </form>
+    </dialog>
+    <dialog id="info-dialog" aria-labelledby="about-title">
+      <button class="close" aria-label="Close dialog">×</button>
+      <div class="eyebrow">DO SHEHER. EK APNAPAN.</div>
+      <h2 id="about-title">Our little community.</h2>
+      <p>
+        For those with roots in Lucknow and a home in Hyderabad. Aawan Jaawan
+        makes it easier to find a familiar face on the same journey, send a
+        small parcel, or ask for a little help.
+      </p>
+      <p>
+        Browse the board, share your itinerary, or post a request. Use “Connect”
+        to reach a traveller on WhatsApp.
+      </p>
+      <p class="form-info">
+        Community posts are shared with everyone who can access this board.
+        Saved items stay personal to this browser. Please share only details you
+        want the community to see.
+      </p>
+    </dialog>
+    <div id="toast" role="status"></div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

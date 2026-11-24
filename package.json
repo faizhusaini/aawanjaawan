@@ -1,0 +1,24 @@
+{
+  "name": "aawanjaawan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A community travel board connecting Lucknow and Hyderabad.",
+  "homepage": "https://aawanjaawan.fun",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "python3 build.py",
+    "dev": "npm --prefix cloudflare run dev",
+    "start": "npm run dev",
+    "test": "npm run build && node --test test/*.test.mjs && python3 -m unittest discover -s test -p \"test_*.py\"",
+    "check:deploy": "npm run build && npm --prefix cloudflare run check:deploy",
+    "deploy": "npm --prefix cloudflare run deploy",
+    "format": "prettier --write src cloudflare/worker.mjs test/*.js test/*.mjs README.md cloudflare/README.md",
+    "format:check": "prettier --check src cloudflare/worker.mjs test/*.js test/*.mjs README.md cloudflare/README.md"
+  },
+  "devDependencies": {
+    "prettier": "3.2.5"
+  }
+}
