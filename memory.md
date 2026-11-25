@@ -101,3 +101,15 @@ No member login, self-service edit/delete, automatic matching, date ranges/open-
 ## Target GitHub repository supplied
 
 User created/provided **https://github.com/faizhusaini/aawanjaawan**. Use origin URL `https://github.com/faizhusaini/aawanjaawan.git`. Attempted `python3 scripts/publish.py <URL>` from agent, but `git remote add` failed with `.git/config: Operation not permitted`; no remote, commit, or push was created by that attempt. User can run the exact same command from the project root in their normal IntelliJ terminal. Do not ask for the repository URL again. Commit identity remains Faiz Husaini <faizhusaini19@gmail.com>. Website deployment stays separate from Git push.
+
+
+## GitHub fetch-first reconciliation
+
+Verified local commit `197cfe2` exists; origin is https://github.com/faizhusaini/aawanjaawan.git. User's IDE push was rejected because remote main has its own commit. Extra remote named `main` also exists but was not modified. Agent fetch still cannot write .git/FETCH_HEAD (and external DNS was blocked earlier). Working tree was clean before this follow-up.
+
+Updated `scripts/publish.py` to fetch/merge the remote with --allow-unrelated-histories before pushing, with per-command author identity and no force push. Only README.md/LICENSE/LICENSE.txt initialization conflicts are auto-reconciled: keep reviewed app doc and save remote text in docs/github-initial/. Code conflicts or existing unresolved merges stop. Added five passing focused tests in test/test_publish.py. No actual remote fetch/merge/push was performed by the agent. User can run `python3 scripts/publish.py` in their normal terminal, then use IntelliJ Git → Push if terminal authentication does not reuse IDE login.
+
+
+## 2026-11-25: IntelliJ Fetch verified
+
+User confirmed IntelliJ Git → Fetch successful. Read-only inspection now shows origin/main at `a92982d Initial commit`, containing only README.md; local main remains `197cfe2`. This confirms IDE authentication/access, not a completed merge or push. Existing uncommitted changes include new city-route work (migration 0002_city_routes.sql and frontend/backend updates); preserve them. Added `scripts/publish.py --prepare-only` for the user terminal: commits current local work, merges cached origin/main without fetch/push authentication, and instructs IntelliJ Git → Push. Only initialization documentation conflicts are reconciled automatically with both copies preserved. Focused tests cover no-network prepare and missing cached branch. Agent has not modified Git history.

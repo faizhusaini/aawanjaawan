@@ -41,7 +41,7 @@ npm ci --prefix cloudflare
 npm run dev
 ```
 
-Open the local URL printed by Wrangler. This applies migrations to a **local D1 database** and starts the Worker with the same frontend and API used in production. Local test posts are separate from live community data.
+Open the local URL printed by Wrangler. This applies migrations to a **local D1 database** and starts the Worker with the same frontend and API used in production. Local test posts are separate from live community data. Use the Wrangler URL for posting tests because IntelliJ’s built-in preview and other static file servers do not serve the posts API.
 
 For an asset-only demo, run `npm run build` and open `dist/index.html` directly as a file. That mode uses fictional example posts and browser-local storage. HTTP(S) visits always use the shared API and do not silently fall back to demo storage when saving fails.
 
@@ -133,7 +133,15 @@ The code can be committed and pushed from a terminal with Git write access:
 python3 scripts/publish.py
 ```
 
-If `origin` is missing, the helper asks for an existing empty GitHub/GitLab repository URL. It uses the project owner's supplied commit identity, respects `.gitignore`, commits staged changes, and pushes the current branch without force. GitHub/GitLab authentication happens through your local Git setup; never embed access tokens in the repository URL. This does not deploy the website.
+If `origin` is missing, the helper asks for an GitHub/GitLab repository URL. It uses the project owner's supplied commit identity, respects `.gitignore`, commits staged changes, fetches and merges the remote branch, and pushes without force. If an initial GitHub README or license conflicts with the reviewed documentation, both versions are preserved: the app version remains at its normal path and the remote text is saved under `docs/github-initial/`. Code conflicts stop for review. GitHub/GitLab authentication happens through your local Git setup; never embed access tokens in the repository URL. This does not deploy the website.
+
+If GitHub login is configured in IntelliJ rather than terminal Git, use **Git → Fetch** in the IDE, then run:
+
+```sh
+python3 scripts/publish.py --prepare-only
+```
+
+This commits local changes and merges the already-fetched history without network authentication. Finish with **IntelliJ → Git → Push**. It does not force-push or deploy the website.
 
 ## License
 

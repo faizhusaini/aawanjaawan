@@ -20,6 +20,13 @@ class CloudflareTests(unittest.TestCase):
         query=re.search(r'prepare\(\s*"(SELECT id,name[^\"]+)"\s*,?\s*\)',worker).group(1)
         base=['post-1','Member','+919876543210','lko','2099-12-20','Any mode','Find a traveller','','request',1,'active']
         db.execute(insert,base)
+        migration=(ROOT/'cloudflare/migrations/0002_city_routes.sql').read_text()
+        db.executescript(migration)
+        self.assertEqual(db.execute('SELECT * FROM posts').fetchone(), tuple(base))
+        for route in ('aligarh-hyd', 'delhi-hyd', 'allahabad-hyd', 'gorakhpur-hyd'):
+            for direction in (route, 'hyd-' + route.removesuffix('-hyd')):
+                db.execute('UPDATE posts SET route=?', (direction,))
+                self.assertEqual(db.execute(query, ('2026-11-24',)).fetchone()[3], direction)
         self.assertEqual(len(db.execute(query,('2026-11-24',)).fetchall()),1)
         for status in ('completed','cancelled'):
             db.execute('UPDATE posts SET status=?',(status,))

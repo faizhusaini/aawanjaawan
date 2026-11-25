@@ -222,7 +222,18 @@ async function runWorkerChecks(worker, validatePost, indiaToday) {
       response.headers.get('Location') === 'https://aawanjaawan.fun/path?x=1',
     'www canonical redirect preserves path',
   );
-  for (const route of ['lko', 'hyd'])
+  for (const route of [
+    'lko',
+    'hyd',
+    'aligarh-hyd',
+    'hyd-aligarh',
+    'delhi-hyd',
+    'hyd-delhi',
+    'allahabad-hyd',
+    'hyd-allahabad',
+    'gorakhpur-hyd',
+    'hyd-gorakhpur',
+  ])
     for (const type of ['request', 'trip']) {
       const modes =
         type === 'request'

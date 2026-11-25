@@ -8,8 +8,33 @@ async function runTests() {
     post('one'),
     post('two', 'hyd', 'request', 6),
     post('three', 'lko', 'trip', 40),
+    { ...post('four', 'delhi-hyd', 'trip', 3), name: 'Shazan' },
+    { ...post('past', 'lko', 'trip', -5), name: 'Past traveller' },
   ]);
   await tick();
+  assert(
+    node('#trip-highlight').textContent.includes('Ayesha Khan is going from Lucknow to Hyderabad'),
+    'carousel starts with the next upcoming trip',
+  );
+  intervals[1]();
+  assert(
+    node('#trip-highlight').textContent.includes('Shazan is going from Delhi to Hyderabad'),
+    'carousel advances across cities',
+  );
+  fire('#trip-carousel-pause', 'click');
+  intervals[1]();
+  assert(node('#trip-highlight').textContent.includes('Shazan'), 'rotation can be paused');
+  fire('#trip-carousel-next', 'click');
+  fire('#trip-carousel-next', 'click');
+  assert(node('#trip-highlight').textContent.includes('Ayesha'), 'rotation skips requests and expired trips');
+  fire('#clear', 'click');
+  assert(!node('#posts').innerHTML.includes('Shazan'), 'Lucknow is the default route filter');
+  node('#route').value = 'delhi-hyd';
+  fire('#route');
+  assert(node('#posts').innerHTML.includes('Delhi <span>→</span> Hyderabad'), 'new route renders and filters');
+  click('connect', 'four');
+  assert(decodeURIComponent(opened.pop()[0]).includes('Delhi to Hyderabad'), 'WhatsApp uses the selected route');
+  fire('#clear', 'click');
   assert(
     node('#posts').innerHTML.includes('Ayesha Khan'),
     'read renders shared posts',
@@ -186,6 +211,29 @@ async function runTests() {
   assert(
     JSON.parse(storage['aj-posts'] || '[]').length === 0,
     'failed shared save never falls back to browser',
+  );
+  const unexpectedResponse = fire('#post-form', 'submit');
+  pending.at(-1).resolve({
+    ok: false,
+    json: () => Promise.reject(new SyntaxError('Unexpected token <')),
+  });
+  await unexpectedResponse;
+  assert(node('#post-dialog').open, 'non-JSON response preserves the form');
+  assert(
+    node('#toast').textContent.includes(
+      location.hostname === 'localhost' ? 'npm run dev' : 'unexpected response',
+    ),
+    'non-JSON response gives an actionable error',
+  );
+  intervals[0]();
+  pending.at(-1).resolve({
+    ok: true,
+    json: () => Promise.reject(new SyntaxError('Unexpected token <')),
+  });
+  await tick();
+  assert(
+    node('#toast').textContent.includes('unexpected response'),
+    'non-JSON board refresh gives a clear error',
   );
   setField('phone', 'abc9876543210');
   const before = pending.length;

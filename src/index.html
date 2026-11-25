@@ -6,7 +6,7 @@
     <title>Aawan Jaawan · A little closer to home</title>
     <meta
       name="description"
-      content="The Lucknow–Hyderabad community travel board. Share a journey, find a helping hand, stay a little closer to home." />
+      content="A community travel board connecting Hyderabad with Lucknow and other cities. Share a trip or find a traveller." />
     <meta name="theme-color" content="#194e40" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="css/style.css" />
@@ -28,6 +28,14 @@
       </button>
     </header>
     <main>
+      <section id="trip-carousel" class="trip-carousel" aria-label="Upcoming trip highlights" hidden>
+        <strong>Upcoming trips</strong>
+        <p id="trip-highlight"></p>
+        <div id="trip-carousel-controls" class="trip-carousel-controls" hidden>
+          <button id="trip-carousel-pause" type="button">Pause</button>
+          <button id="trip-carousel-next" type="button" aria-label="Next trip">Next →</button>
+        </div>
+      </section>
       <section class="hero">
         <div class="hero-copy">
           <div class="eyebrow">
@@ -38,7 +46,7 @@
           </h1>
           <p>
             A journey home. A little favour. A familiar face.<br />Connecting
-            our people between Lucknow & Hyderabad.
+            our people between Hyderabad, Lucknow and other cities.
           </p>
           <div class="hero-actions">
             <button class="button primary" data-create="request">
@@ -146,10 +154,23 @@
         <div class="filters">
           <label
             ><span>↔</span
-            ><select id="route">
-              <option value="all">Both directions</option>
-              <option value="lko">Lucknow → Hyderabad</option>
-              <option value="hyd">Hyderabad → Lucknow</option>
+            ><select id="route" aria-label="Filter by route">
+              <option value="lucknow">Lucknow · Both directions</option>
+              <option value="all">All cities</option>
+              <optgroup label="Lucknow">
+                <option value="lko">Lucknow → Hyderabad</option>
+                <option value="hyd">Hyderabad → Lucknow</option>
+              </optgroup>
+              <optgroup label="Other cities">
+                <option value="aligarh-hyd">Aligarh → Hyderabad</option>
+                <option value="hyd-aligarh">Hyderabad → Aligarh</option>
+                <option value="delhi-hyd">Delhi → Hyderabad</option>
+                <option value="hyd-delhi">Hyderabad → Delhi</option>
+                <option value="allahabad-hyd">Allahabad → Hyderabad</option>
+                <option value="hyd-allahabad">Hyderabad → Allahabad</option>
+                <option value="gorakhpur-hyd">Gorakhpur → Hyderabad</option>
+                <option value="hyd-gorakhpur">Hyderabad → Gorakhpur</option>
+              </optgroup>
             </select></label
           ><label
             ><span>▦</span
@@ -231,8 +252,20 @@
               required /></label
           ><label
             >Direction<select name="route">
-              <option value="lko">Lucknow → Hyderabad</option>
-              <option value="hyd">Hyderabad → Lucknow</option>
+              <optgroup label="Lucknow">
+                <option value="lko">Lucknow → Hyderabad</option>
+                <option value="hyd">Hyderabad → Lucknow</option>
+              </optgroup>
+              <optgroup label="Other cities">
+                <option value="aligarh-hyd">Aligarh → Hyderabad</option>
+                <option value="hyd-aligarh">Hyderabad → Aligarh</option>
+                <option value="delhi-hyd">Delhi → Hyderabad</option>
+                <option value="hyd-delhi">Hyderabad → Delhi</option>
+                <option value="allahabad-hyd">Allahabad → Hyderabad</option>
+                <option value="hyd-allahabad">Hyderabad → Allahabad</option>
+                <option value="gorakhpur-hyd">Gorakhpur → Hyderabad</option>
+                <option value="hyd-gorakhpur">Hyderabad → Gorakhpur</option>
+              </optgroup>
             </select></label
           ><label id="date-label"
             ><span>Travel date</span

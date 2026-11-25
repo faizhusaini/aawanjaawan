@@ -1,7 +1,20 @@
+const ROUTES = [
+  'lko',
+  'hyd',
+  'aligarh-hyd',
+  'hyd-aligarh',
+  'delhi-hyd',
+  'hyd-delhi',
+  'allahabad-hyd',
+  'hyd-allahabad',
+  'gorakhpur-hyd',
+  'hyd-gorakhpur',
+];
+
 const LIMITS = {
   name: 60,
   phone: 24,
-  route: 3,
+  route: 13,
   date: 10,
   mode: 20,
   help: 40,
@@ -29,7 +42,7 @@ export function validatePost(input, today = indiaToday()) {
     post[key] = value.trim();
   }
   if (
-    !['lko', 'hyd'].includes(post.route) ||
+    !ROUTES.includes(post.route) ||
     !['trip', 'request'].includes(post.type)
   )
     throw new Error('Choose a valid route and post type.');

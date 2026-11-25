@@ -12,6 +12,19 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError
 from uuid import uuid4
 
+ROUTES = (
+  'lko',
+  'hyd',
+  'aligarh-hyd',
+  'hyd-aligarh',
+  'delhi-hyd',
+  'hyd-delhi',
+  'allahabad-hyd',
+  'hyd-allahabad',
+  'gorakhpur-hyd',
+  'hyd-gorakhpur',
+)
+
 ROOT = Path(__file__).resolve().parent
 DB = Path(os.environ.get('AAWAN_DB', str(ROOT / 'data' / 'community.sqlite3')))
 CONFIG = json.loads((ROOT / 'config.json').read_text()) if (ROOT / 'config.json').exists() else {}
@@ -59,14 +72,14 @@ def india_today():
 
 
 def validate_post(data):
-    limits = {'name': 60, 'phone': 24, 'route': 3, 'date': 10, 'mode': 20, 'help': 40, 'note': 350, 'type': 7}
+    limits = {'name': 60, 'phone': 24, 'route': 13, 'date': 10, 'mode': 20, 'help': 40, 'note': 350, 'type': 7}
     post = {}
     for key, limit in limits.items():
         value = data.get(key, '' if key == 'note' else None)
         if not isinstance(value, str) or (key != 'note' and not value.strip()) or len(value.strip()) > limit:
             raise ValueError('Please check your ' + key + '.')
         post[key] = value.strip()
-    if post['route'] not in ('lko', 'hyd') or post['type'] not in ('trip', 'request'):
+    if post['route'] not in ROUTES or post['type'] not in ('trip', 'request'):
         raise ValueError('Choose a valid route and post type.')
     if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', post['date']) or date.fromisoformat(post['date']) < india_today():
         raise ValueError('Choose today or a future travel date.')

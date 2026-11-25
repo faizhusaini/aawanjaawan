@@ -6,6 +6,20 @@
     d.setDate(d.getDate() + offset);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
+  const cityCodes = { Lucknow: 'LKO', Hyderabad: 'HYD' };
+  const isLucknowRoute = (route) => route === 'lko' || route === 'hyd';
+  const routes = {
+    lko: ['Lucknow', 'Hyderabad'],
+    hyd: ['Hyderabad', 'Lucknow'],
+    'aligarh-hyd': ['Aligarh', 'Hyderabad'],
+    'hyd-aligarh': ['Hyderabad', 'Aligarh'],
+    'delhi-hyd': ['Delhi', 'Hyderabad'],
+    'hyd-delhi': ['Hyderabad', 'Delhi'],
+    'allahabad-hyd': ['Allahabad', 'Hyderabad'],
+    'hyd-allahabad': ['Hyderabad', 'Allahabad'],
+    'gorakhpur-hyd': ['Gorakhpur', 'Hyderabad'],
+    'hyd-gorakhpur': ['Hyderabad', 'Gorakhpur'],
+  };
   const examples = [
     {
       id: 'ex1',
@@ -105,6 +119,29 @@
       if (method === 'listPosts') runner.listPosts();
       else runner.createPost(data);
     });
+  async function postsRequest(options) {
+    const response = await fetch('/api/posts', options);
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      const host = location.hostname;
+      if (
+        ['localhost', '127.0.0.1', '[::1]'].includes(host) ||
+        host.endsWith('.localhost')
+      ) {
+        throw new Error(
+          'The local posts API returned an unexpected response. Run npm run dev and open the URL printed by Wrangler.',
+        );
+      }
+      throw new Error(
+        'The community board returned an unexpected response. Check the board before retrying a post.',
+      );
+    }
+    if (!response.ok)
+      throw new Error(data?.error || 'Unable to connect to the community board.');
+    return data;
+  }
   const allPosts = () => (shared ? community : [...examples, ...own]);
   const persist = () => {
     try {
@@ -133,17 +170,59 @@
     clearTimeout(timer);
     timer = setTimeout(() => $('#toast').classList.remove('visible'), 3500);
   }
+  const highlightDate = new Intl.DateTimeFormat('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+  let highlightedTrip = '';
+  let rotationPaused =
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+
+  function renderHighlights(advance = false) {
+    const today = iso(0);
+    const trips = allPosts()
+      .filter(
+        (p) =>
+          p.type === 'trip' &&
+          p.date >= today &&
+          !p.id.startsWith('ex') &&
+          Object.hasOwn(routes, p.route),
+      )
+      .sort((a, b) => a.date.localeCompare(b.date));
+    $('#trip-carousel').hidden = !trips.length;
+    $('#trip-carousel-controls').hidden = trips.length < 2;
+    if (!trips.length) {
+      highlightedTrip = '';
+      $('#trip-highlight').textContent = '';
+      return;
+    }
+    const current = trips.findIndex((p) => p.id === highlightedTrip);
+    const index = current < 0 ? 0 : (current + Number(advance)) % trips.length;
+    const trip = trips[index];
+    highlightedTrip = trip.id;
+    const [from, to] = routes[trip.route];
+    const date = highlightDate.format(new Date(trip.date + 'T00:00:00'));
+    const highlight = $('#trip-highlight');
+    const message = `${trip.name} is going from ${from} to ${to} on ${date}.`;
+    if (highlight.textContent !== message) highlight.textContent = message;
+  }
+
   function render() {
+    renderHighlights();
     let items = allPosts();
     $('#all-count').textContent = items.length;
     $('#saved-count').textContent = saved.filter((id) =>
       items.some((p) => p.id === id),
     ).length;
+    const route = $('#route').value;
     items = items.filter(
       (p) =>
         (tab === 'all' || p.type === tab) &&
         (!savedOnly || saved.includes(p.id)) &&
-        ($('#route').value === 'all' || p.route === $('#route').value),
+        (route === 'all' ||
+          p.route === route ||
+          (route === 'lucknow' && isLucknowRoute(p.route))),
     );
     const days = $('#dates').value;
     if (days !== 'all')
@@ -158,7 +237,7 @@
           p.note,
           p.help,
           p.mode,
-          p.route === 'lko' ? 'Lucknow Hyderabad' : 'Hyderabad Lucknow',
+          routes[p.route]?.join(' '),
         ]
           .join(' ')
           .toLowerCase()
@@ -174,8 +253,7 @@
     $('#empty').hidden = items.length > 0;
     $('#posts').innerHTML = items
       .map((p) => {
-        const from = p.route === 'lko' ? 'Lucknow' : 'Hyderabad',
-          to = p.route === 'lko' ? 'Hyderabad' : 'Lucknow';
+        const [from, to] = routes[p.route] || [];
         const date = new Date(p.date + 'T12:00:00').toLocaleDateString(
           'en-IN',
           { day: 'numeric', month: 'short', year: 'numeric' },
@@ -186,7 +264,7 @@
           .slice(0, 2)
           .map((x) => x[0])
           .join('');
-        return `<article class="card"><div class="card-top"><span class="badge ${p.type === 'request' ? 'request' : ''}">${p.type === 'trip' ? '↗ &nbsp; Travelling soon' : '♡ &nbsp; Looking for a traveller'}</span><button class="save ${saved.includes(p.id) ? 'saved' : ''}" data-save="${escape(p.id)}" aria-label="${saved.includes(p.id) ? 'Unsave' : 'Save'} post by ${escape(p.name)}" aria-pressed="${saved.includes(p.id)}">${saved.includes(p.id) ? '▣' : '♧'}</button></div><div class="route-line">${from} <span>→</span> ${to}</div><div class="route-codes">${p.route === 'lko' ? 'LKO &nbsp; ───────── &nbsp; HYD' : 'HYD &nbsp; ───────── &nbsp; LKO'}</div><div class="date-line"><span>▦ &nbsp; ${p.type === 'request' ? 'By ' : ''}${date}</span><span>${p.mode === 'Flight' ? '✈' : p.mode === 'Train' ? '▤' : '↗'} &nbsp; ${escape(p.mode)}</span></div><p class="card-note">${escape(p.note)}</p><span class="help-tag">${p.type === 'trip' ? '♧ Offering · ' : '♡ Request · '}${escape(p.help)}</span><div class="card-bottom"><span class="person-avatar" style="background:${p.color || '#e0e5d6'}">${escape(initials)}</span><span class="person-name">${escape(p.name)}<small>${p.id.startsWith('ex') ? 'Example community member' : shared ? 'Community member' : 'Posted by you'}</small></span><button class="connect" data-connect="${escape(p.id)}">Connect ↗</button></div></article>`;
+        return `<article class="card"><div class="card-top"><span class="badge ${p.type === 'request' ? 'request' : ''}">${p.type === 'trip' ? '↗ &nbsp; Travelling soon' : '♡ &nbsp; Looking for a traveller'}</span><button class="save ${saved.includes(p.id) ? 'saved' : ''}" data-save="${escape(p.id)}" aria-label="${saved.includes(p.id) ? 'Unsave' : 'Save'} post by ${escape(p.name)}" aria-pressed="${saved.includes(p.id)}">${saved.includes(p.id) ? '▣' : '♧'}</button></div><div class="route-line">${from} <span>→</span> ${to}</div><div class="route-codes">${cityCodes[from] || from} &nbsp; ───────── &nbsp; ${cityCodes[to] || to}</div><div class="date-line"><span>▦ &nbsp; ${p.type === 'request' ? 'By ' : ''}${date}</span><span>${p.mode === 'Flight' ? '✈' : p.mode === 'Train' ? '▤' : '↗'} &nbsp; ${escape(p.mode)}</span></div><p class="card-note">${escape(p.note)}</p><span class="help-tag">${p.type === 'trip' ? '♧ Offering · ' : '♡ Request · '}${escape(p.help)}</span><div class="card-bottom"><span class="person-avatar" style="background:${p.color || '#e0e5d6'}">${escape(initials)}</span><span class="person-name">${escape(p.name)}<small>${p.id.startsWith('ex') ? 'Example community member' : shared ? 'Community member' : 'Posted by you'}</small></span><button class="connect" data-connect="${escape(p.id)}">Connect ↗</button></div></article>`;
       })
       .join('');
     document.querySelectorAll('[data-tab]').forEach((b) => {
@@ -202,6 +280,7 @@
       createType = create.dataset.create;
       const request = createType === 'request';
       $('#post-form').reset();
+      $('#post-form [name="route"]').value = 'lko';
       $('#form-title').textContent = request
         ? 'Find a traveller'
         : 'Share your trip';
@@ -270,7 +349,7 @@
         return;
       }
       const number = p.phone.replace(/\D/g, '');
-      const text = `Hi ${p.name}! I saw your ${p.type === 'trip' ? 'trip' : 'request'} on Aawan Jaawan ${p.route === 'lko' ? 'Lucknow to Hyderabad' : 'Hyderabad to Lucknow'} ${p.type === 'request' ? 'needed by' : 'on'} ${p.date}. Could we connect?`;
+      const text = `Hi ${p.name}! I saw your ${p.type === 'trip' ? 'trip' : 'request'} on Aawan Jaawan ${routes[p.route]?.join(' to ') || ''} ${p.type === 'request' ? 'needed by' : 'on'} ${p.date}. Could we connect?`;
       window.open(
         `https://wa.me/${number.length === 10 ? '91' : ''}${number}?text=${encodeURIComponent(text)}`,
         '_blank',
@@ -319,17 +398,19 @@
         let result;
         if (sheetsMode) result = await sheetsCall('createPost', post);
         else {
-          const response = await fetch('/api/posts', {
+          result = await postsRequest({
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify(post),
           });
-          result = await response.json();
-          if (!response.ok)
-            throw new Error(
-              result.error || 'Unable to share your post. Please try again.',
-            );
         }
+        if (typeof result?.id !== 'string' || !result.id)
+          throw new Error(
+            'Unable to confirm your post was saved. Check the board before retrying.',
+          );
         postRevision++;
         community = community.filter((p) => p.id !== result.id);
         community.push(result);
@@ -339,7 +420,7 @@
       }
       tab = 'all';
       savedOnly = false;
-      $('#route').value = 'all';
+      $('#route').value = isLucknowRoute(post.route) ? 'lucknow' : post.route;
       $('#dates').value = 'all';
       $('#search').value = '';
       $('#sort').value = 'new';
@@ -367,7 +448,7 @@
   );
   $('#search').addEventListener('input', render);
   $('#clear').addEventListener('click', () => {
-    $('#route').value = 'all';
+    $('#route').value = 'lucknow';
     $('#dates').value = 'all';
     $('#search').value = '';
     savedOnly = false;
@@ -376,6 +457,7 @@
   });
   $('#saved-nav').addEventListener('click', () => {
     savedOnly = !savedOnly;
+    $('#route').value = savedOnly ? 'all' : 'lucknow';
     tab = 'all';
     render();
     $('#board').scrollIntoView({ behavior: 'smooth' });
@@ -409,20 +491,10 @@
       let posts;
       if (sheetsMode) posts = await sheetsCall('listPosts');
       else {
-        const response = await fetch('/api/posts', {
+        posts = await postsRequest({
           headers: { Accept: 'application/json' },
           cache: 'no-store',
         });
-        if (!response.ok) {
-          if (localApiMode) {
-            const failure = await response.json();
-            throw new Error(
-              failure.error || 'Unable to connect to the community board.',
-            );
-          }
-          return;
-        }
-        posts = await response.json();
       }
       if (!Array.isArray(posts))
         throw new Error('Unable to read the community board.');
@@ -448,8 +520,26 @@
       }
     }
   }
+  const pause = $('#trip-carousel-pause');
+  const updateRotationLabel = () => {
+    pause.textContent = rotationPaused ? 'Play' : 'Pause';
+    $('#trip-highlight').setAttribute('aria-live', rotationPaused ? 'polite' : 'off');
+  };
+  updateRotationLabel();
+  pause.addEventListener('click', () => {
+    rotationPaused = !rotationPaused;
+    updateRotationLabel();
+  });
+  $('#trip-carousel-next').addEventListener('click', () => {
+    rotationPaused = true;
+    updateRotationLabel();
+    renderHighlights(true);
+  });
   refresh();
   setInterval(() => {
     if (shared && !document.hidden) refresh();
   }, 30000);
+  setInterval(() => {
+    if (!rotationPaused && !document.hidden) renderHighlights(true);
+  }, 6000);
 })();

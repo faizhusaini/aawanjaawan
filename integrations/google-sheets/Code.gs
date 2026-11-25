@@ -1,3 +1,16 @@
+const POST_ROUTES = [
+  'lko',
+  'hyd',
+  'aligarh-hyd',
+  'hyd-aligarh',
+  'delhi-hyd',
+  'hyd-delhi',
+  'allahabad-hyd',
+  'hyd-allahabad',
+  'gorakhpur-hyd',
+  'hyd-gorakhpur',
+];
+
 /** Aawan Jaawan. Paste into the Apps Script project bound to your Google Sheet. */
 const POST_COLUMNS = ['id', 'name', 'phone', 'route', 'date', 'mode', 'help', 'note', 'type', 'created', 'status'];
 
@@ -69,7 +82,7 @@ function listPosts() {
     });
     post.created = Number(post.created) || 0;
     return post;
-  }).filter(post => post.id && post.name && ['lko','hyd'].includes(post.route)
+  }).filter(post => post.id && post.name && POST_ROUTES.includes(post.route)
     && ['trip','request'].includes(post.type) && /^\d{4}-\d{2}-\d{2}$/.test(post.date)
     && post.date >= today && post.status.toLowerCase().trim() === 'active')
     .sort((a, b) => b.created - a.created);
@@ -78,7 +91,7 @@ function listPosts() {
 /** Validates on the server; callers cannot choose IDs or write arbitrary columns. */
 function createPost(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Invalid post.');
-  const limits = {name:60, phone:24, route:3, date:10, mode:20, help:40, note:350, type:7};
+  const limits = {name:60, phone:24, route:13, date:10, mode:20, help:40, note:350, type:7};
   const post = {};
   Object.keys(limits).forEach(key => {
     if (key === 'note' && input[key] == null) input[key] = '';
@@ -87,7 +100,7 @@ function createPost(input) {
     }
     post[key] = input[key].trim();
   });
-  if (!['lko','hyd'].includes(post.route) || !['trip','request'].includes(post.type)) throw new Error('Choose a valid route and post type.');
+  if (!POST_ROUTES.includes(post.route) || !['trip','request'].includes(post.type)) throw new Error('Choose a valid route and post type.');
   const modes = post.type === 'trip' ? ['Flight','Train','Car','Not decided'] : ['Any mode','Flight','Train','Car','Not decided'];
   if (!modes.includes(post.mode)) throw new Error('Choose a valid travel mode.');
   const helps = post.type === 'trip' ? ['A small parcel','Travel company','Anything I can','Just sharing my trip'] : ['Find a traveller','A small parcel','Travel company','Other'];
