@@ -19,6 +19,6 @@
     "format:check": "prettier --check src cloudflare/worker.mjs test/*.js test/*.mjs README.md cloudflare/README.md"
   },
   "devDependencies": {
-    "prettier": "3.2.5"
+    "prettier": "3.10.1"
   }
 }
