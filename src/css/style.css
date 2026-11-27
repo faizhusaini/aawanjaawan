@@ -569,6 +569,33 @@ h2 {
 .connect:hover {
   background: #e3ebda;
 }
+.card[data-post-type='trip'] {
+  border-color: #cbd6c7;
+  border-left: 3px solid #678669;
+}
+.card[data-post-type='trip'] .badge {
+  background: #e4ede0;
+  color: var(--green);
+  font-weight: 700;
+}
+.card[data-post-type='trip'] .route-line {
+  color: var(--green);
+  font-weight: 600;
+}
+.card[data-post-type='trip'] .route-line span,
+.card[data-post-type='trip'] .route-codes,
+.card[data-post-type='trip'] .card-note,
+.card[data-post-type='trip'] .help-tag,
+.card[data-post-type='trip'] .person-name small {
+  color: #536454;
+}
+.card[data-post-type='trip'] .date-line {
+  color: var(--ink);
+  font-weight: 650;
+}
+.card[data-post-type='trip'] .connect {
+  font-weight: 650;
+}
 .bottom-banner {
   margin: 40px 0;
   background: #eef0e7;
