@@ -3,7 +3,7 @@
 ## Development and release workflow
 
 - Develop on `dev`. Use `npm run dev` with local D1 and `npm run deploy:staging` for the separate `aawanjaawan-dev` Worker and D1 database. Staging uses `cloudflare/wrangler.dev.jsonc` and https://aawanjaawan-dev.aawanjaawan.workers.dev.
-- After staging checks pass, merge `dev` into `main`, run `npm run deploy` on `main`, and smoke-test https://aawanjaawan.fun. GitHub runs tests and both Worker dry runs, while deployment is manual.
+- After staging checks pass, prepare a release branch from `origin/main` following `cloudflare/README.md`. Preserve `cloudflare/wrangler.jsonc` from `main` and omit `cloudflare/wrangler.dev.jsonc`. Use a merge commit when merging the release PR, then run `npm run deploy` on `main` and smoke-test https://aawanjaawan.fun. The main PR check rejects direct `dev` PRs, staging config, and production config edits outside dedicated `infra/production-*` PRs.
 - 2026-11-27: Staging Worker version `e8e8213c-2939-4a51-b7f6-c8db80cb3c10` deployed. Both D1 migrations passed locally and on staging. Verified the staging homepage, D1 health endpoint, and creating and listing a fictional Delhi → Hyderabad trip via HTTPS.
 - Earlier Git setup notes below are historical. Before staging setup, local `main` and cached `origin/main` both pointed to `cee1e0e`.
 

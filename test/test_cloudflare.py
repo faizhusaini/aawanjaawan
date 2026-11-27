@@ -51,7 +51,10 @@ class CloudflareTests(unittest.TestCase):
 
     def test_staging_uses_separate_worker_and_database(self):
         production = json.loads((ROOT / 'cloudflare/wrangler.jsonc').read_text())
-        staging = json.loads((ROOT / 'cloudflare/wrangler.dev.jsonc').read_text())
+        staging_config = ROOT / 'cloudflare/wrangler.dev.jsonc'
+        if not staging_config.is_file():
+            self.skipTest('Staging config is present on dev.')
+        staging = json.loads(staging_config.read_text())
         production_db = production['d1_databases'][0]
         staging_db, = staging['d1_databases']
         self.assertEqual(staging['name'], 'aawanjaawan-dev')

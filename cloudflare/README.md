@@ -23,7 +23,34 @@ npm run deploy:staging
 
 This publishes the Worker and applies migrations using `wrangler.dev.jsonc` and the separate `aawanjaawan-dev` D1 database. Use fictional data for staging smoke tests. Check `/api/health`, both posting flows, and persistence across browser sessions.
 
-After staging passes, merge `dev` into `main`. From the updated `main` checkout, authenticate if needed and deploy:
+### Prepare a release PR
+
+After staging passes, start with a clean working tree and create a release branch from the latest `origin/main`. Replace `release/my-release` with your release branch name.
+
+```sh
+git fetch origin
+git switch -c release/my-release origin/main
+git merge --no-ff --no-commit origin/dev
+```
+
+Before committing the merge, keep the production config from the first parent and remove the staging config from the release branch. If Git reports a modify/delete conflict on the staging file, the removal below resolves it. Resolve any shared code conflicts before committing.
+
+```sh
+git restore --source=HEAD --staged --worktree -- cloudflare/wrangler.jsonc
+git rm -f --ignore-unmatch -- cloudflare/wrangler.dev.jsonc
+git diff --cached --check
+git diff --cached -- cloudflare/wrangler.jsonc cloudflare/wrangler.dev.jsonc
+git commit -m "Prepare production release"
+git push -u origin HEAD
+```
+
+The config diff should be empty. Open a PR from the release branch to `main` and use **Create a merge commit** after checks pass so Git records which `dev` commits were released. Shared Worker code, assets, and migrations travel with the release. Use a dedicated `infra/production-*` branch from `main` for intentional production config changes.
+
+In GitHub, require the `test` status check from **App checks** on `main` to make a failed config check block merging.
+
+### Deploy production
+
+From the updated `main` checkout, authenticate if needed and deploy:
 
 ```sh
 cd cloudflare
@@ -55,6 +82,8 @@ python3 configure.py --database-id YOUR_REAL_DATABASE_ID
 ```
 
 ## Local development
+
+Run from `dev`:
 
 ```sh
 npm run dev

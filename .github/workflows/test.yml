@@ -12,6 +12,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check Cloudflare settings for main
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
+        env:
+          PR_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [[ "$PR_BRANCH" == dev ]]; then
+            echo "::error::Prepare a release branch from main before promoting dev."
+            exit 1
+          fi
+          if [[ -n "$(git ls-tree HEAD -- cloudflare/wrangler.dev.jsonc)" ]]; then
+            echo "::error file=cloudflare/wrangler.dev.jsonc::The staging config belongs on dev."
+            exit 1
+          fi
+          if [[ "$PR_BRANCH" != infra/production-* ]] &&
+             ! git diff --quiet HEAD^1 HEAD -- cloudflare/wrangler.jsonc; then
+            echo "::error file=cloudflare/wrangler.jsonc::Use a dedicated infra/production-* PR for changes to production settings."
+            exit 1
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -26,10 +46,14 @@ jobs:
       - run: npm ci --prefix cloudflare
       - run: npm run format:check
       - run: npm test
-      - name: Validate both Worker configurations
+      - name: Validate production Worker configuration
         working-directory: cloudflare
-        run: |
-          npm run check:deploy
-          npm run check:staging
+        run: npm run check:deploy
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+      - name: Validate staging Worker configuration
+        if: github.ref_name == 'dev' || github.base_ref == 'dev' || hashFiles('cloudflare/wrangler.dev.jsonc') != ''
+        working-directory: cloudflare
+        run: npm run check:staging
         env:
           WRANGLER_SEND_METRICS: 'false'

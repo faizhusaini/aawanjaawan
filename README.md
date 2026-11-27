@@ -45,7 +45,7 @@ The deployed app needs no Google Sheets, Apps Script, Python server, or computer
 
 Requirements: **Node.js 22+**, **npm**, and **Python 3.9+**. Python is used for asset generation and regression checks; it is not the production backend.
 
-From the repository root:
+From the repository root on `dev`:
 
 ```sh
 npm ci
@@ -85,7 +85,7 @@ npm run format:check
 npm run deploy:staging
 ```
 
-Smoke-test [aawanjaawan-dev.aawanjaawan.workers.dev](https://aawanjaawan-dev.aawanjaawan.workers.dev) using fictional test records. Staging has its own D1 database. When a change is ready, merge `dev` into `main` through a pull request. On the updated `main` checkout, run `npm run deploy` and verify [aawanjaawan.fun](https://aawanjaawan.fun). Git pushes run checks. Deployments are manual.
+Smoke-test [aawanjaawan-dev.aawanjaawan.workers.dev](https://aawanjaawan-dev.aawanjaawan.workers.dev) using fictional test records. Staging has its own Worker configuration and D1 database. When a change is ready, prepare a release branch from `main` and open a PR using the [Cloudflare release guide](cloudflare/README.md#prepare-a-release-pr). On the updated `main` checkout, run `npm run deploy` and verify [aawanjaawan.fun](https://aawanjaawan.fun). Git pushes run checks. Deployments are manual.
 
 ## Deploy to production
 
@@ -151,7 +151,7 @@ For Google Sheets, follow the [legacy setup guide](integrations/google-sheets/SE
 
 ## Git and website releases
 
-GitHub stores the source and runs the checks in `.github/workflows/test.yml`, including a dry run for both Worker configurations.
+GitHub runs a production Worker dry run on every branch and a staging dry run for branches with the staging config. PRs to `main` also check that the proposed merge keeps the environments separate.
 
 For first-time repository setup, `scripts/publish.py` can prepare commits and reconcile an initial remote commit. With IntelliJ-managed GitHub authentication, use **Git → Fetch**, run `python3 scripts/publish.py --prepare-only`, then finish with **Git → Push**. Code conflicts stop for review; the helper never force-pushes.
 
