@@ -1033,33 +1033,63 @@ form select {
 }
 
 .trip-carousel {
-  max-width: 1440px;
-  margin: auto;
-  padding: 12px 5.5%;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  background: #e8eee4;
+  margin: 0 0 16px;
+  padding: clamp(14px, 2.4vw, 24px);
+  border: 1px solid #cbd6c7;
+  border-left: 3px solid #678669;
+  border-radius: 10px;
+  background: #edf2e9;
   color: var(--green);
 }
-.trip-carousel[hidden],
-.trip-carousel-controls[hidden] {
+.trip-carousel [hidden],
+.trip-carousel[hidden] {
   display: none;
 }
-.trip-carousel p {
-  flex: 1 1 240px;
+.trip-carousel-header,
+.trip-carousel-empty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.trip-carousel-header h3 {
   margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.trip-carousel-empty {
+  margin-top: 8px;
+}
+.trip-carousel-empty p,
+#trip-highlight-details {
+  margin: 6px 0 0;
+  color: #536454;
+  overflow-wrap: anywhere;
+}
+#trip-highlight-route {
+  margin: 8px 0 0;
+  font: 600 clamp(19px, 3vw, 25px) / 1.3 var(--serif);
   overflow-wrap: anywhere;
 }
 .trip-carousel-controls {
   display: flex;
-  gap: 8px;
+  gap: 5px;
 }
 .trip-carousel-controls button {
-  min-height: 32px;
-  padding: 4px 10px;
-  border: 1px solid currentColor;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid #b8c7b7;
   border-radius: 8px;
-  background: transparent;
+  background: #fffefa;
+  color: var(--green);
+  font-size: 13px;
+}
+.trip-carousel-controls button:hover {
+  background: #e1ebdd;
+}
+.trip-carousel-controls button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
 }

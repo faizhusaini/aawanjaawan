@@ -109,6 +109,7 @@
     createType = 'trip',
     shared = !!sheetsMode || localApiMode;
   let community = shared ? [] : examples;
+  let communityLoaded = !shared;
   let postRevision = 0,
     submitting = false;
   const sheetsCall = (method, data) =>
@@ -178,36 +179,49 @@
     year: 'numeric',
   });
   let highlightedTrip = '';
-  let rotationPaused =
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  const carousel = $('#trip-carousel');
+  const highlight = $('#trip-highlight');
+  const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  let rotationPaused = reducedMotion?.matches ?? false;
+  let carouselHovered = false;
 
-  function renderHighlights(advance = false) {
+  function renderHighlights(step = 0) {
     const today = iso(0);
     const trips = allPosts()
       .filter(
         (p) =>
           p.type === 'trip' &&
           p.date >= today &&
-          !p.id.startsWith('ex') &&
+          (!shared || !p.id.startsWith('ex')) &&
           Object.hasOwn(routes, p.route),
       )
       .sort((a, b) => a.date.localeCompare(b.date));
-    $('#trip-carousel').hidden = !trips.length;
+    carousel.hidden = !communityLoaded && !trips.length;
+    highlight.hidden = !trips.length;
+    $('#trip-carousel-empty').hidden = Boolean(trips.length);
     $('#trip-carousel-controls').hidden = trips.length < 2;
     if (!trips.length) {
       highlightedTrip = '';
-      $('#trip-highlight').textContent = '';
       return;
     }
     const current = trips.findIndex((p) => p.id === highlightedTrip);
-    const index = current < 0 ? 0 : (current + Number(advance)) % trips.length;
+    const index =
+      current < 0 ? 0 : (current + step + trips.length) % trips.length;
     const trip = trips[index];
-    highlightedTrip = trip.id;
     const [from, to] = routes[trip.route];
     const date = highlightDate.format(new Date(trip.date + 'T00:00:00'));
-    const highlight = $('#trip-highlight');
-    const message = `${trip.name} is going from ${from} to ${to} on ${date}.`;
-    if (highlight.textContent !== message) highlight.textContent = message;
+    const route = $('#trip-highlight-route');
+    const details = $('#trip-highlight-details');
+    const direction = `${from} → ${to}`;
+    const caption = `${trip.id.startsWith('ex') ? 'Example trip · ' : ''}${trip.name} · ${date} · ${trip.mode}`;
+    if (route.textContent !== direction) route.textContent = direction;
+    if (details.textContent !== caption) details.textContent = caption;
+    if (trip.id !== highlightedTrip && !reducedMotion?.matches)
+      highlight.animate?.([{ opacity: 0.45 }, { opacity: 1 }], {
+        duration: 220,
+        easing: 'ease-out',
+      });
+    highlightedTrip = trip.id;
   }
 
   function render() {
@@ -497,6 +511,7 @@
       if (postRevision !== revision) return;
       shared = true;
       community = posts;
+      communityLoaded = true;
       $('.demo-note').textContent = sheetsMode
         ? '● Connected to our community sheet'
         : '● Community board · shared with our people';
@@ -519,26 +534,44 @@
   const pause = $('#trip-carousel-pause');
   const updateRotationLabel = () => {
     pause.textContent = rotationPaused ? 'Play' : 'Pause';
-    $('#trip-highlight').setAttribute(
-      'aria-live',
-      rotationPaused ? 'polite' : 'off',
-    );
+    highlight.setAttribute('aria-live', rotationPaused ? 'polite' : 'off');
   };
   updateRotationLabel();
   pause.addEventListener('click', () => {
     rotationPaused = !rotationPaused;
     updateRotationLabel();
   });
-  $('#trip-carousel-next').addEventListener('click', () => {
+  function pauseRotation() {
     rotationPaused = true;
     updateRotationLabel();
-    renderHighlights(true);
+  }
+  for (const [button, step] of [
+    ['#trip-carousel-prev', -1],
+    ['#trip-carousel-next', 1],
+  ]) {
+    $(button).addEventListener('click', () => {
+      pauseRotation();
+      renderHighlights(step);
+    });
+  }
+  carousel.addEventListener('focusin', (event) => {
+    if (!carousel.contains(event.relatedTarget)) pauseRotation();
+  });
+  carousel.addEventListener('mouseenter', () => {
+    carouselHovered = true;
+  });
+  carousel.addEventListener('mouseleave', () => {
+    carouselHovered = false;
+  });
+  reducedMotion?.addEventListener('change', (event) => {
+    if (event.matches) pauseRotation();
   });
   refresh();
   setInterval(() => {
     if (shared && !document.hidden) refresh();
   }, 30000);
   setInterval(() => {
-    if (!rotationPaused && !document.hidden) renderHighlights(true);
+    if (!rotationPaused && !carouselHovered && !document.hidden)
+      renderHighlights(1);
   }, 6000);
 })();

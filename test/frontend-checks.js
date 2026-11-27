@@ -1,5 +1,6 @@
 async function runTests() {
   assert(pending.length === 1, 'initial shared read');
+  assert(node('#trip-carousel').hidden, 'carousel waits for the shared board');
   assert(
     !node('#posts').innerHTML.includes('Example community'),
     'localhost never shows fictional posts',
@@ -7,35 +8,46 @@ async function runTests() {
   respond(0, 200, [
     post('one'),
     post('two', 'hyd', 'request', 6),
-    post('three', 'lko', 'trip', 40),
+    { ...post('three', 'lko', 'trip', 40), name: 'Faraz' },
     { ...post('four', 'delhi-hyd', 'trip', 3), name: 'Shazan' },
     { ...post('past', 'lko', 'trip', -5), name: 'Past traveller' },
   ]);
   await tick();
+  assert(!node('#trip-carousel').hidden, 'carousel displays shared trips');
   assert(
-    node('#trip-highlight').textContent.includes(
-      'Ayesha Khan is going from Lucknow to Hyderabad',
-    ),
+    node('#trip-highlight-route').textContent === 'Lucknow → Hyderabad' &&
+      node('#trip-highlight-details').textContent.includes('Ayesha Khan'),
     'carousel starts with the next upcoming trip',
   );
   intervals[1]();
   assert(
-    node('#trip-highlight').textContent.includes(
-      'Shazan is going from Delhi to Hyderabad',
-    ),
+    node('#trip-highlight-route').textContent === 'Delhi → Hyderabad' &&
+      node('#trip-highlight-details').textContent.includes('Shazan'),
     'carousel advances across cities',
   );
+  fire('#trip-carousel', 'mouseenter');
+  intervals[1]();
+  assert(
+    node('#trip-highlight-details').textContent.includes('Shazan'),
+    'rotation waits while the pointer is on the carousel',
+  );
+  fire('#trip-carousel', 'mouseleave');
   fire('#trip-carousel-pause', 'click');
   intervals[1]();
   assert(
-    node('#trip-highlight').textContent.includes('Shazan'),
+    node('#trip-highlight-details').textContent.includes('Shazan'),
     'rotation can be paused',
   );
   fire('#trip-carousel-next', 'click');
   fire('#trip-carousel-next', 'click');
   assert(
-    node('#trip-highlight').textContent.includes('Ayesha'),
+    node('#trip-highlight-details').textContent.includes('Ayesha'),
     'rotation skips requests and expired trips',
+  );
+  fire('#trip-carousel-prev', 'click');
+  assert(
+    node('#trip-highlight-details').textContent.includes('Faraz'),
+    'previous trip wraps to the last upcoming trip',
   );
   fire('#clear', 'click');
   assert(
@@ -262,6 +274,22 @@ async function runTests() {
   setField('name', '   ');
   await fire('#post-form', 'submit');
   assert(pending.length === before, 'blank name never sent');
+  intervals[0]();
+  respond(pending.length - 1, 200, [post('last')]);
+  await tick();
+  assert(
+    !node('#trip-highlight').hidden && node('#trip-carousel-controls').hidden,
+    'one upcoming trip displays without rotation controls',
+  );
+  intervals[0]();
+  respond(pending.length - 1, 200, [post('only-request', 'lko', 'request')]);
+  await tick();
+  assert(
+    !node('#trip-carousel').hidden &&
+      node('#trip-highlight').hidden &&
+      !node('#trip-carousel-empty').hidden,
+    'an empty carousel offers to share a first trip',
+  );
   return checks;
 }
 var testResult;

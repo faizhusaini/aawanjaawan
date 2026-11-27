@@ -35,4 +35,8 @@ test('opening a file directly shows the explicitly labelled local demo', () => {
   const html = vm.runInContext("node('#posts').innerHTML", context);
   assert.match(html, /Example community member/);
   assert.equal(vm.runInContext("node('#all-count').textContent", context), 6);
+  assert.match(
+    vm.runInContext("node('#trip-highlight-details').textContent", context),
+    /^Example trip · /,
+  );
 });
