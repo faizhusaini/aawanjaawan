@@ -28,6 +28,44 @@
       </button>
     </header>
     <main>
+      <section
+        id="trip-carousel"
+        class="trip-carousel"
+        aria-labelledby="trip-carousel-title"
+        aria-roledescription="carousel"
+        hidden>
+        <div class="trip-carousel-header">
+          <h3 id="trip-carousel-title">Upcoming trips</h3>
+          <div
+            id="trip-carousel-controls"
+            class="trip-carousel-controls"
+            hidden>
+            <button id="trip-carousel-pause" type="button">Pause</button>
+            <button
+              id="trip-carousel-prev"
+              type="button"
+              aria-label="Previous trip">
+              ←
+            </button>
+            <button
+              id="trip-carousel-next"
+              type="button"
+              aria-label="Next trip">
+              →
+            </button>
+          </div>
+        </div>
+        <div id="trip-highlight" aria-atomic="true" hidden>
+          <p id="trip-highlight-route"></p>
+          <p id="trip-highlight-details"></p>
+        </div>
+        <div id="trip-carousel-empty" class="trip-carousel-empty" hidden>
+          <p>No upcoming trips yet.</p>
+          <button class="button secondary" type="button" data-create="trip">
+            ＋ Share your trip
+          </button>
+        </div>
+      </section>
       <section class="hero">
         <div class="hero-copy">
           <div class="eyebrow">
@@ -128,44 +166,6 @@
           </div>
           <p>A trip to share or a favour to ask. You’re in the right place.</p>
         </div>
-        <section
-          id="trip-carousel"
-          class="trip-carousel"
-          aria-labelledby="trip-carousel-title"
-          aria-roledescription="carousel"
-          hidden>
-          <div class="trip-carousel-header">
-            <h3 id="trip-carousel-title">Upcoming trips</h3>
-            <div
-              id="trip-carousel-controls"
-              class="trip-carousel-controls"
-              hidden>
-              <button id="trip-carousel-pause" type="button">Pause</button>
-              <button
-                id="trip-carousel-prev"
-                type="button"
-                aria-label="Previous trip">
-                ←
-              </button>
-              <button
-                id="trip-carousel-next"
-                type="button"
-                aria-label="Next trip">
-                →
-              </button>
-            </div>
-          </div>
-          <div id="trip-highlight" aria-atomic="true" hidden>
-            <p id="trip-highlight-route"></p>
-            <p id="trip-highlight-details"></p>
-          </div>
-          <div id="trip-carousel-empty" class="trip-carousel-empty" hidden>
-            <p>No upcoming trips yet.</p>
-            <button class="button secondary" type="button" data-create="trip">
-              ＋ Share your trip
-            </button>
-          </div>
-        </section>
         <div class="board-toolbar">
           <div class="tabs" role="tablist">
             <button class="selected" data-tab="all" role="tab">
