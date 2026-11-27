@@ -1033,13 +1033,14 @@ form select {
 }
 
 .trip-carousel {
-  margin: 0 0 12px;
-  padding: 8px clamp(10px, 1.8vw, 18px);
-  border: 1px solid #cbd6c7;
-  border-left: 3px solid #678669;
-  border-radius: 10px;
+  border-block: 1px solid #cbd6c7;
   background: #edf2e9;
   color: var(--green);
+}
+.trip-carousel-inner {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding: 4px 5%;
 }
 .trip-carousel [hidden],
 .trip-carousel[hidden] {
@@ -1063,12 +1064,13 @@ form select {
 }
 .trip-carousel-empty p,
 #trip-highlight-details {
-  margin: 3px 0 0;
+  margin: 1px 0 0;
   color: #536454;
+  font-size: 13px;
   overflow-wrap: anywhere;
 }
 #trip-highlight-route {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   font: 600 clamp(18px, 2.5vw, 22px) / 1.2 var(--serif);
   overflow-wrap: anywhere;
 }
@@ -1078,8 +1080,8 @@ form select {
 }
 .trip-carousel-controls button {
   min-width: 40px;
-  min-height: 40px;
-  padding: 6px 10px;
+  min-height: 34px;
+  padding: 4px 10px;
   border: 1px solid #b8c7b7;
   border-radius: 8px;
   background: #fffefa;
@@ -1094,7 +1096,7 @@ form select {
   outline-offset: 2px;
 }
 @media (min-width: 761px) {
-  .trip-carousel {
+  .trip-carousel-inner {
     display: grid;
     grid-template-columns: max-content minmax(0, 1fr) auto;
     align-items: center;
