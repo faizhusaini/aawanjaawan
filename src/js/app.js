@@ -139,7 +139,9 @@
       );
     }
     if (!response.ok)
-      throw new Error(data?.error || 'Unable to connect to the community board.');
+      throw new Error(
+        data?.error || 'Unable to connect to the community board.',
+      );
     return data;
   }
   const allPosts = () => (shared ? community : [...examples, ...own]);
@@ -232,13 +234,7 @@
     const query = $('#search').value.trim().toLowerCase();
     if (query)
       items = items.filter((p) =>
-        [
-          p.name,
-          p.note,
-          p.help,
-          p.mode,
-          routes[p.route]?.join(' '),
-        ]
+        [p.name, p.note, p.help, p.mode, routes[p.route]?.join(' ')]
           .join(' ')
           .toLowerCase()
           .includes(query),
@@ -523,7 +519,10 @@
   const pause = $('#trip-carousel-pause');
   const updateRotationLabel = () => {
     pause.textContent = rotationPaused ? 'Play' : 'Pause';
-    $('#trip-highlight').setAttribute('aria-live', rotationPaused ? 'polite' : 'off');
+    $('#trip-highlight').setAttribute(
+      'aria-live',
+      rotationPaused ? 'polite' : 'off',
+    );
   };
   updateRotationLabel();
   pause.addEventListener('click', () => {

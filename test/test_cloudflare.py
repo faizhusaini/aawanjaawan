@@ -49,6 +49,22 @@ class CloudflareTests(unittest.TestCase):
         self.assertFalse((ROOT/'cloudflare/public/config.json').exists())
         self.assertFalse((ROOT/'cloudflare/public/worker.mjs').exists())
 
+    def test_staging_uses_separate_worker_and_database(self):
+        production = json.loads((ROOT / 'cloudflare/wrangler.jsonc').read_text())
+        staging = json.loads((ROOT / 'cloudflare/wrangler.dev.jsonc').read_text())
+        production_db = production['d1_databases'][0]
+        staging_db, = staging['d1_databases']
+        self.assertEqual(staging['name'], 'aawanjaawan-dev')
+        self.assertNotEqual(staging['name'], production['name'])
+        self.assertTrue(staging['workers_dev'])
+        self.assertFalse(staging.get('routes'))
+        self.assertEqual(staging['main'], production['main'])
+        self.assertEqual(staging['assets'], production['assets'])
+        self.assertEqual(staging_db['binding'], production_db['binding'])
+        self.assertEqual(staging_db['migrations_dir'], production_db['migrations_dir'])
+        self.assertEqual(staging_db['database_name'], 'aawanjaawan-dev')
+        self.assertNotEqual(staging_db['database_id'], production_db['database_id'])
+
 
 class LaunchTests(unittest.TestCase):
     @classmethod

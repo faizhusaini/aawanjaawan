@@ -26,8 +26,10 @@ jobs:
       - run: npm ci --prefix cloudflare
       - run: npm run format:check
       - run: npm test
-      - name: Validate Worker bundle without deploying
+      - name: Validate both Worker configurations
         working-directory: cloudflare
-        run: npx wrangler deploy --dry-run
+        run: |
+          npm run check:deploy
+          npm run check:staging
         env:
           WRANGLER_SEND_METRICS: 'false'

@@ -41,10 +41,7 @@ export function validatePost(input, today = indiaToday()) {
     }
     post[key] = value.trim();
   }
-  if (
-    !ROUTES.includes(post.route) ||
-    !['trip', 'request'].includes(post.type)
-  )
+  if (!ROUTES.includes(post.route) || !['trip', 'request'].includes(post.type))
     throw new Error('Choose a valid route and post type.');
   const modes =
     post.type === 'trip'

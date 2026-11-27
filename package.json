@@ -15,6 +15,7 @@
     "test": "npm run build && node --test test/*.test.mjs && python3 -m unittest discover -s test -p \"test_*.py\"",
     "check:deploy": "npm run build && npm --prefix cloudflare run check:deploy",
     "deploy": "npm --prefix cloudflare run deploy",
+    "deploy:staging": "npm --prefix cloudflare run deploy:staging",
     "format": "prettier --write src cloudflare/worker.mjs test/*.js test/*.mjs README.md cloudflare/README.md",
     "format:check": "prettier --check src cloudflare/worker.mjs test/*.js test/*.mjs README.md cloudflare/README.md"
   },

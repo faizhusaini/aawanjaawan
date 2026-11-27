@@ -75,7 +75,19 @@ cd cloudflare
 npx wrangler deploy --dry-run
 ```
 
-## Deploy
+## Release workflow
+
+Develop on `dev`. Run the local checks, push changes to `origin/dev`, and publish the staging Worker from that branch:
+
+```sh
+npm test
+npm run format:check
+npm run deploy:staging
+```
+
+Smoke-test [aawanjaawan-dev.aawanjaawan.workers.dev](https://aawanjaawan-dev.aawanjaawan.workers.dev) using fictional test records. Staging has its own D1 database. When a change is ready, merge `dev` into `main` through a pull request. On the updated `main` checkout, run `npm run deploy` and verify [aawanjaawan.fun](https://aawanjaawan.fun). Git pushes run checks. Deployments are manual.
+
+## Deploy to production
 
 The current Cloudflare project is configured in `cloudflare/wrangler.jsonc`. Database IDs identify resources; they are not credentials. Authentication stays in your local Wrangler login or your deployment environment.
 
@@ -139,7 +151,7 @@ For Google Sheets, follow the [legacy setup guide](integrations/google-sheets/SE
 
 ## Git and website releases
 
-GitHub stores the source and runs the checks in `.github/workflows/test.yml`. **Pushing code does not automatically deploy the live website.** After testing a change, commit and push it using IntelliJ or your Git client, then run `npm run deploy` when ready to publish it to Cloudflare.
+GitHub stores the source and runs the checks in `.github/workflows/test.yml`, including a dry run for both Worker configurations.
 
 For first-time repository setup, `scripts/publish.py` can prepare commits and reconcile an initial remote commit. With IntelliJ-managed GitHub authentication, use **Git → Fetch**, run `python3 scripts/publish.py --prepare-only`, then finish with **Git → Push**. Code conflicts stop for review; the helper never force-pushes.
 

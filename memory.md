@@ -1,5 +1,12 @@
 # Aawan Jaawan — session handoff
 
+## Development and release workflow
+
+- Develop on `dev`. Use `npm run dev` with local D1 and `npm run deploy:staging` for the separate `aawanjaawan-dev` Worker and D1 database. Staging uses `cloudflare/wrangler.dev.jsonc` and https://aawanjaawan-dev.aawanjaawan.workers.dev.
+- After staging checks pass, merge `dev` into `main`, run `npm run deploy` on `main`, and smoke-test https://aawanjaawan.fun. GitHub runs tests and both Worker dry runs, while deployment is manual.
+- 2026-11-27: Staging Worker version `e8e8213c-2939-4a51-b7f6-c8db80cb3c10` deployed. Both D1 migrations passed locally and on staging. Verified the staging homepage, D1 health endpoint, and creating and listing a fictional Delhi → Hyderabad trip via HTTPS.
+- Earlier Git setup notes below are historical. Before staging setup, local `main` and cached `origin/main` both pointed to `cee1e0e`.
+
 Last updated: 2026-11-24 (Asia/Kolkata). Read this file when resuming and update it after meaningful changes. Never store credentials here.
 
 ## Product and user preferences

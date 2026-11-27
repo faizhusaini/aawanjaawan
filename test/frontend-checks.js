@@ -13,27 +13,46 @@ async function runTests() {
   ]);
   await tick();
   assert(
-    node('#trip-highlight').textContent.includes('Ayesha Khan is going from Lucknow to Hyderabad'),
+    node('#trip-highlight').textContent.includes(
+      'Ayesha Khan is going from Lucknow to Hyderabad',
+    ),
     'carousel starts with the next upcoming trip',
   );
   intervals[1]();
   assert(
-    node('#trip-highlight').textContent.includes('Shazan is going from Delhi to Hyderabad'),
+    node('#trip-highlight').textContent.includes(
+      'Shazan is going from Delhi to Hyderabad',
+    ),
     'carousel advances across cities',
   );
   fire('#trip-carousel-pause', 'click');
   intervals[1]();
-  assert(node('#trip-highlight').textContent.includes('Shazan'), 'rotation can be paused');
+  assert(
+    node('#trip-highlight').textContent.includes('Shazan'),
+    'rotation can be paused',
+  );
   fire('#trip-carousel-next', 'click');
   fire('#trip-carousel-next', 'click');
-  assert(node('#trip-highlight').textContent.includes('Ayesha'), 'rotation skips requests and expired trips');
+  assert(
+    node('#trip-highlight').textContent.includes('Ayesha'),
+    'rotation skips requests and expired trips',
+  );
   fire('#clear', 'click');
-  assert(!node('#posts').innerHTML.includes('Shazan'), 'Lucknow is the default route filter');
+  assert(
+    !node('#posts').innerHTML.includes('Shazan'),
+    'Lucknow is the default route filter',
+  );
   node('#route').value = 'delhi-hyd';
   fire('#route');
-  assert(node('#posts').innerHTML.includes('Delhi <span>→</span> Hyderabad'), 'new route renders and filters');
+  assert(
+    node('#posts').innerHTML.includes('Delhi <span>→</span> Hyderabad'),
+    'new route renders and filters',
+  );
   click('connect', 'four');
-  assert(decodeURIComponent(opened.pop()[0]).includes('Delhi to Hyderabad'), 'WhatsApp uses the selected route');
+  assert(
+    decodeURIComponent(opened.pop()[0]).includes('Delhi to Hyderabad'),
+    'WhatsApp uses the selected route',
+  );
   fire('#clear', 'click');
   assert(
     node('#posts').innerHTML.includes('Ayesha Khan'),

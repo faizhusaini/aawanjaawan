@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aawanjaawan-dev",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "aawanjaawan-dev",
+      "database_id": "56ce36d4-045d-4546-be1a-59b498a9edb8",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

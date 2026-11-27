@@ -1,11 +1,12 @@
 # Cloudflare deployment guide
 
-**Production:** https://aawanjaawan.fun  
-**Temporary address:** https://aawanjaawan.aawanjaawan.workers.dev
+- **Production** https://aawanjaawan.fun
+- **Staging** https://aawanjaawan-dev.aawanjaawan.workers.dev
+- **Production Worker address** https://aawanjaawan.aawanjaawan.workers.dev
 
 The Worker, D1 database, and both custom domains have been deployed successfully. Hostinger remains the domain registrar; Cloudflare provides DNS, HTTPS, hosting, and database storage.
 
-## Existing project: publish an update
+## Staging and production releases
 
 From the repository root, install dependencies once:
 
@@ -14,7 +15,15 @@ npm ci
 npm ci --prefix cloudflare
 ```
 
-Then authenticate and deploy:
+From the repository root, on `dev`:
+
+```sh
+npm run deploy:staging
+```
+
+This publishes the Worker and applies migrations using `wrangler.dev.jsonc` and the separate `aawanjaawan-dev` D1 database. Use fictional data for staging smoke tests. Check `/api/health`, both posting flows, and persistence across browser sessions.
+
+After staging passes, merge `dev` into `main`. From the updated `main` checkout, authenticate if needed and deploy:
 
 ```sh
 cd cloudflare
@@ -25,7 +34,7 @@ npm run deploy
 
 If automatic browser login fails, use `npm run login -- --device --browser=false` and follow the verification URL/code. Keep credentials in Wrangler or the deployment environment; never commit them.
 
-`npm run deploy` rebuilds the frontend, performs a bundle dry run, applies remote migrations, and publishes. It uses the existing D1 UUID in `wrangler.jsonc`. Do not delete/recreate the database to deploy an update.
+`npm run deploy` rebuilds the frontend, performs a bundle dry run, applies remote migrations, and publishes. It uses the existing production D1 UUID in `wrangler.jsonc`. Verify `aawanjaawan.fun` after deploying. Both deploy scripts check the active Git branch before starting.
 
 ## New account or fresh installation
 
@@ -51,7 +60,7 @@ python3 configure.py --database-id YOUR_REAL_DATABASE_ID
 npm run dev
 ```
 
-Wrangler applies migrations to a local D1 database and starts a local Worker. Local posts do not alter the production board. Use the returned `workers.dev` URL or custom domain for production smoke tests.
+Wrangler uses the staging configuration with a local D1 database. Local posts stay on the development machine. For remote tests, use the staging URL above.
 
 ## Domain setup and recovery
 
