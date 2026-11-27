@@ -1,10 +1,10 @@
 # Aawan Jaawan
 
-**Do sheher. Ek apnapan.** A community travel board for people with roots in Lucknow and a home in Hyderabad.
+**A little closer to home.** A community travel board connecting people in Hyderabad with familiar faces travelling to and from home.
 
 **Live website: [aawanjaawan.fun](https://aawanjaawan.fun)**
 
-Find someone travelling home, share your next journey, or ask for a small favour—without losing the details in a group chat.
+Born from the Lucknow–Hyderabad community, Aawan Jaawan turns “Is anyone coming this week?” into a clear, shared board. Find a traveller, share your itinerary, or ask for a small favour without losing the details in a group chat.
 
 ## What you can do
 
@@ -15,6 +15,18 @@ Find someone travelling home, share your next journey, or ask for a small favour
 - **Connect on WhatsApp:** contact a member using the number they provided.
 
 Requests and trips have distinct fields and defaults. Notes are optional, dates must be today or later, and Indian ten-digit contact numbers are normalized to `+91`.
+
+## Supported routes
+
+The code supports travel in **both directions** between Hyderabad and:
+
+- Lucknow
+- Aligarh
+- Delhi
+- Allahabad
+- Gorakhpur
+
+The board keeps Lucknow–Hyderabad journeys easy to find while allowing the wider community to share trips on the other routes.
 
 ## How it works
 
@@ -91,7 +103,7 @@ After publishing:
 | `GET /api/posts`  | List active, unexpired posts, newest first |
 | `POST /api/posts` | Validate and create a trip or request      |
 
-A post contains `id`, `name`, `phone`, `route`, `date`, `mode`, `help`, `note`, `type`, `created`, and `status`. The server assigns its ID, creation time, and active status. `lko` means Lucknow → Hyderabad; `hyd` means Hyderabad → Lucknow. Dates use `YYYY-MM-DD`; expiry follows India time.
+A post contains `id`, `name`, `phone`, `route`, `date`, `mode`, `help`, `note`, `type`, `created`, and `status`. The server assigns its ID, creation time, and active status. `lko` means Lucknow → Hyderabad; `hyd` means Hyderabad → Lucknow. Additional routes use city-pair keys such as `delhi-hyd` and `hyd-delhi`. Dates use `YYYY-MM-DD`; expiry follows India time.
 
 Administrators can manage records in **Cloudflare → D1 → aawanjaawan → Console**. Marking a row `completed` or `cancelled` hides it from the board. Past trips/requests are hidden automatically; their records remain in the database. Keep database exports/backups outside this repository.
 
@@ -125,23 +137,13 @@ AAWAN_SHEETS_URL="" python3 server.py
 
 For Google Sheets, follow the [legacy setup guide](integrations/google-sheets/SETUP.md). Set `AAWAN_SHEETS_URL` to your own deployed Apps Script `/exec` URL or create an ignored root `config.json` with a `sheets_url` property. Records are not automatically synchronized or migrated between these backends and D1.
 
-## Publish the repository
+## Git and website releases
 
-The code can be committed and pushed from a terminal with Git write access:
+GitHub stores the source and runs the checks in `.github/workflows/test.yml`. **Pushing code does not automatically deploy the live website.** After testing a change, commit and push it using IntelliJ or your Git client, then run `npm run deploy` when ready to publish it to Cloudflare.
 
-```sh
-python3 scripts/publish.py
-```
+For first-time repository setup, `scripts/publish.py` can prepare commits and reconcile an initial remote commit. With IntelliJ-managed GitHub authentication, use **Git → Fetch**, run `python3 scripts/publish.py --prepare-only`, then finish with **Git → Push**. Code conflicts stop for review; the helper never force-pushes.
 
-If `origin` is missing, the helper asks for an GitHub/GitLab repository URL. It uses the project owner's supplied commit identity, respects `.gitignore`, commits staged changes, fetches and merges the remote branch, and pushes without force. If an initial GitHub README or license conflicts with the reviewed documentation, both versions are preserved: the app version remains at its normal path and the remote text is saved under `docs/github-initial/`. Code conflicts stop for review. GitHub/GitLab authentication happens through your local Git setup; never embed access tokens in the repository URL. This does not deploy the website.
-
-If GitHub login is configured in IntelliJ rather than terminal Git, use **Git → Fetch** in the IDE, then run:
-
-```sh
-python3 scripts/publish.py --prepare-only
-```
-
-This commits local changes and merges the already-fetched history without network authentication. Finish with **IntelliJ → Git → Push**. It does not force-push or deploy the website.
+This root `README.md` is the project's main documentation and the README GitHub should display.
 
 ## License
 

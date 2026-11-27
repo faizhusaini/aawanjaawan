@@ -113,3 +113,8 @@ Updated `scripts/publish.py` to fetch/merge the remote with --allow-unrelated-hi
 ## 2026-11-25: IntelliJ Fetch verified
 
 User confirmed IntelliJ Git → Fetch successful. Read-only inspection now shows origin/main at `a92982d Initial commit`, containing only README.md; local main remains `197cfe2`. This confirms IDE authentication/access, not a completed merge or push. Existing uncommitted changes include new city-route work (migration 0002_city_routes.sql and frontend/backend updates); preserve them. Added `scripts/publish.py --prepare-only` for the user terminal: commits current local work, merges cached origin/main without fetch/push authentication, and instructs IntelliJ Git → Push. Only initialization documentation conflicts are reconciled automatically with both copies preserved. Focused tests cover no-network prepare and missing cached branch. Agent has not modified Git history.
+
+
+## 2026-11-27: canonical project README
+
+User explicitly requested the project README replace GitHub's initial README, without keeping that initial README as the project documentation. Confirmed local main at `bea6b81` with the detailed root README already retained after the merge. Removed `docs/github-initial/README.md` (the archived two-line initial GitHub README) and polished root README with current supported city routes and a clear Git/Cloudflare release distinction. Root `README.md` is canonical. This changes documentation only; no website deployment is needed. Commit/push must be verified separately; session Git metadata restrictions may still block it.
